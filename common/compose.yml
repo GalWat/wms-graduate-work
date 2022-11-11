@@ -1,0 +1,20 @@
+services:
+  common-migrations:
+    container_name: common-migrations
+    build: ./common
+    depends_on:
+      - postgres
+    command:
+      - "dbmate"
+      - "--url"
+      - "postgres://${PG_USER}:${PG_PASSWORD}@${PG_DEFAULT_DB}:${PG_PORT}/common?sslmode=disable"
+      - "up"
+  
+  common:
+    container_name: common
+    build: ./common
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+      - common-migrations

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:13
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${PG_DEFAULT_DB}", "-U", "${PG_USER}" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    ports:
+      - ${PG_PORT}:5432
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DEFAULT_DB}
