@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM python:3.9-alpine
+FROM python:3.11-alpine
 
-WORKDIR /compose
+WORKDIR /common
 COPY . ./
 
 RUN apk add curl &&\
@@ -10,4 +10,4 @@ RUN apk add curl &&\
     https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 &&\
     chmod +x /usr/local/bin/dbmate
 
-CMD ["python", "app/main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--app-dir", "app"]
