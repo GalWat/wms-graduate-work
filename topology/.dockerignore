@@ -1,5 +1,0 @@
-.idea
-.dockerignore
-__pycache__
-Dockerfile
-compose.yml
