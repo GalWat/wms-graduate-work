@@ -1,32 +1,19 @@
-import psycopg2
-from config import settings
+
 from fastapi import FastAPI
-from models import LocationGroup
+from schemas.locations import CreateLocationGroupRequest, GetLocationGroupResponse, CreateLocationGroupResponse
+from queries.location_groups import LocationGroupsQueries
 
 app = FastAPI()
 
-conn = psycopg2.connect(
-    host=settings.db.host,
-    database=settings.db.database,
-    user=settings.db.user,
-    password=settings.db.password,
-    port=settings.db.port
-)
-cur = conn.cursor()
 
-
-@app.get("/")
-async def read_root():
-    return {
-        "Hello": "World"
-    }
-
-
-@app.post("/location_groups/create")
-async def create_location_group(location_group: LocationGroup) -> int:
+@app.post("/location_groups/create", tags=["LocationGroups"], response_model=CreateLocationGroupResponse)
+async def create_location_group(location_group: CreateLocationGroupRequest):
     """Create a location group"""
-    cur.execute(f"INSERT INTO location_groups VALUES (DEFAULT, '{location_group.name}') RETURNING id")
-    conn.commit()
+    return LocationGroupsQueries().insert_location_group(location_group.name)
 
-    row = cur.fetchone()
-    return row[0]
+
+@app.get("/location_groups/{location_group_id}", tags=["LocationGroups"], response_model=GetLocationGroupResponse)
+async def get_location_group(location_group_id: int):
+    """Get a location group"""
+    query_result = LocationGroupsQueries().select_location_group(location_group_id)
+    return GetLocationGroupResponse(**query_result)
