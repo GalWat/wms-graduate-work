@@ -14,8 +14,13 @@ services:
   common:
     container_name: common
     build: ./common
-    ports:
-      - 80:80
     depends_on:
       common-migrations:
         condition: service_completed_successfully
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.common-stripprefix.stripprefix.prefixes=/common"
+      - "traefik.http.routers.common.middlewares=common-stripprefix"
+      - "traefik.http.routers.common.rule=PathPrefix(`/common`)"
+      - "traefik.http.routers.common.entrypoints=web"
+      - "traefik.http.services.common.loadbalancer.server.port=80"

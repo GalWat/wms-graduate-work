@@ -1,4 +1,20 @@
 services:
+  traefik:
+    image: traefik:v2.9.6
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--accesslog=true"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   postgres:
     container_name: postgres
     image: postgres:13
@@ -14,3 +30,6 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DEFAULT_DB}
+    depends_on:
+      traefik:
+        condition: service_started
