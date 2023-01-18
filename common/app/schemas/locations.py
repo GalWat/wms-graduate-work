@@ -1,14 +1,17 @@
 from pydantic import BaseModel
 
 
-class CreateLocationGroupRequest(BaseModel):
-    name: str
+class CreateLocationRequest(BaseModel):
+    type_id: int
+    group_id: int
 
 
-class CreateLocationGroupResponse(BaseModel):
+class CreateLocationResponse(BaseModel):
     id: int
 
 
-class GetLocationGroupResponse(BaseModel):
+class GetLocationResponse(BaseModel):
     id: int
-    name: str
+    barcode: str
+    type_id: int
+    group_id: int

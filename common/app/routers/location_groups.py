@@ -1,4 +1,8 @@
-from schemas.locations import CreateLocationGroupRequest, GetLocationGroupResponse, CreateLocationGroupResponse
+from schemas.location_groups import (
+    CreateLocationGroupRequest,
+    GetLocationGroupResponse,
+    CreateLocationGroupResponse
+)
 from queries.location_groups import LocationGroupsQueries
 
 from fastapi import APIRouter
