@@ -1,0 +1,5 @@
+---
+db:
+  host: "galwat-remote.ydns.eu"
+  port: "5432"
+  database: "inventory"

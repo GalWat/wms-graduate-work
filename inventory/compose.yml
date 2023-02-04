@@ -1,0 +1,26 @@
+services:
+  inventory-migrations:
+    container_name: inventory-migrations
+    build: ./inventory
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - "dbmate"
+      - "--url"
+      - "postgres://${PG_USER}:${PG_PASSWORD}@${PG_DEFAULT_DB}:${PG_PORT}/inventory?sslmode=disable"
+      - "up"
+  
+  inventory:
+    container_name: inventory
+    build: ./inventory
+    depends_on:
+      inventory-migrations:
+        condition: service_completed_successfully
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.inventory-stripprefix.stripprefix.prefixes=/inventory"
+      - "traefik.http.routers.inventory.middlewares=inventory-stripprefix"
+      - "traefik.http.routers.inventory.rule=PathPrefix(`/inventory`)"
+      - "traefik.http.routers.inventory.entrypoints=web"
+      - "traefik.http.services.inventory.loadbalancer.server.port=80"

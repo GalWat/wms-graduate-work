@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS units
     id                  serial PRIMARY KEY,
     barcode             varchar(40)                    NOT NULL,
     type_id             int REFERENCES unit_types (id) NOT NULL,
-    current_location_id int REFERENCES locations (id)  NOT NULL,
+    current_location_id int REFERENCES locations (id),
     target_location_id  int REFERENCES locations (id)
 );
 -- migrate:down
