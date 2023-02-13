@@ -1,4 +1,6 @@
-from psycopg2.pool import SimpleConnectionPool
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from dynaconf import Dynaconf
 
 settings = Dynaconf(
@@ -6,12 +8,8 @@ settings = Dynaconf(
     settings_files=['settings.yaml', '.secrets.yaml'],
 )
 
-postgres_connections_pool = SimpleConnectionPool(
-    minconn=1,
-    maxconn=16,
-    host=settings.db.host,
-    database=settings.db.database,
-    user=settings.db.user,
-    password=settings.db.password,
-    port=settings.db.port
+engine = create_engine(
+    f"postgresql://"
+    f"{settings.db.user}:{settings.db.password}@{settings.db.host}:{settings.db.port}/{settings.db.database}"
 )
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
