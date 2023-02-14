@@ -1,16 +1,13 @@
+from . import OrmBase
 from pydantic import BaseModel
 
 
-class CreateSkuRequest(BaseModel):
+class SkuCreate(BaseModel):
     name: str
     tag_ids: list[int] | None
 
 
-class CreateSkuResponse(BaseModel):
-    id: int
-
-
-class GetSkuResponse(BaseModel):
+class Sku(OrmBase):
     id: int
     name: str
     tag_ids: list[int] | None

@@ -14,11 +14,10 @@ CREATE TABLE IF NOT EXISTS skus
 
 CREATE TABLE IF NOT EXISTS products
 (
-    id               serial PRIMARY KEY,
-    barcode          varchar(40) UNIQUE NOT NULL,
-    location_barcode varchar(40),
-    unit_barcode     varchar(40),
-    supply_id        int,
-    sku_id          int REFERENCES skus (id)
+    id           serial PRIMARY KEY,
+    barcode      varchar(40) UNIQUE       NOT NULL,
+    unit_barcode varchar(40)              NOT NULL,
+    sku_id       int REFERENCES skus (id) NOT NULL,
+    supply_id    int
 );
 -- migrate:down

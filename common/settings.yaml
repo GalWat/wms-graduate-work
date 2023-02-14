@@ -1,5 +1,13 @@
 ---
-db:
-  host: "galwat-remote.ydns.eu"
-  port: "5432"
-  database: "common"
+default:
+    db:
+      port: "5432"
+      database: "common"
+
+development:
+    db:
+      host: "galwat-remote.ydns.eu"
+
+production:
+    db:
+      host: "postgres"

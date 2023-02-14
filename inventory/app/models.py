@@ -27,7 +27,6 @@ class Product(Base):
 
     id = mapped_column(Integer, primary_key=True, index=True)
     barcode = mapped_column(String(40), unique=True, nullable=False)
-    location_barcode = mapped_column(String(40))
     unit_barcode = mapped_column(String(40))
     supply_id = mapped_column(Integer)  # TODO: nullable=False
 
