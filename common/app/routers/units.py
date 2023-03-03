@@ -13,7 +13,7 @@ router = APIRouter()
 @router.post("/units/create", tags=["Units"], response_model=CreateUnitResponse)
 async def create_unit(unit: CreateUnitRequest):
     """Create a unit"""
-    result = UnitsQueries().insert_unit(barcode="", type_id=unit.type_id, current_location_id=unit.location)
+    result = UnitsQueries().insert_unit(barcode="", type_id=unit.type_id, current_location_id=unit.location_id)
     unit_id = result["id"]
     unit_barcode = f"un{unit_id}"
     UnitsQueries().update_unit_barcode(unit_id=unit_id, barcode=unit_barcode)

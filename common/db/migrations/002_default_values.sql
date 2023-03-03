@@ -1,9 +1,10 @@
 -- migrate:up
 INSERT INTO location_types
-VALUES (DEFAULT, 'Buffer'),
-       (DEFAULT, 'Cell');
+VALUES (1, 'Buffer'),
+       (2, 'Rack');
 
 INSERT INTO unit_types
-VALUES (DEFAULT, 'Box');
+VALUES (1, 'Cell'),
+       (2, 'Box');
 
 -- migrate:down

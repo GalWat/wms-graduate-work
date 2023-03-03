@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 class ProductCreate(BaseModel):
     unit_barcode: str
-    supply_id: int
+    supply_id: int | None
     sku_id: int
 
 

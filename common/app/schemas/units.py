@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class CreateUnitRequest(BaseModel):
     type_id: int
-    location: int
+    location_id: int
 
 
 class CreateUnitResponse(BaseModel):
