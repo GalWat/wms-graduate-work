@@ -1,0 +1,26 @@
+services:
+  picking-migrations:
+    container_name: picking-migrations
+    build: ./picking
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - "dbmate"
+      - "--url"
+      - "postgres://${PG_USER}:${PG_PASSWORD}@${PG_DEFAULT_DB}:${PG_PORT}/picking?sslmode=disable"
+      - "up"
+  
+  picking:
+    container_name: picking
+    build: ./picking
+    depends_on:
+      picking-migrations:
+        condition: service_completed_successfully
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.picking-stripprefix.stripprefix.prefixes=/picking"
+      - "traefik.http.routers.picking.middlewares=picking-stripprefix"
+      - "traefik.http.routers.picking.rule=PathPrefix(`/picking`)"
+      - "traefik.http.routers.picking.entrypoints=web"
+      - "traefik.http.services.picking.loadbalancer.server.port=80"

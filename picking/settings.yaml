@@ -1,0 +1,13 @@
+---
+default:
+    db:
+      port: "5432"
+      database: "picking"
+
+development:
+    db:
+      host: "galwat-remote.ydns.eu"
+
+production:
+    db:
+      host: "postgres"
