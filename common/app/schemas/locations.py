@@ -26,3 +26,10 @@ class UnitLocation(BaseModel):
     location_id: int
     x: int
     y: int
+
+
+class LocationWithUnits(BaseModel):
+    location_id: int
+    x: int
+    y: int
+    unit_barcodes: list[str]

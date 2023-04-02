@@ -2,7 +2,8 @@ from schemas.locations import (
     CreateLocationRequest,
     CreateLocationResponse,
     GetLocationResponse,
-    UnitLocation
+    UnitLocation,
+    LocationWithUnits
 )
 from queries.locations import LocationsQueries
 
@@ -35,3 +36,27 @@ async def find_locations_by_units(unit_barcodes: list[str]):
     barcodes = tuple(unit_barcodes)
     query_result = LocationsQueries().select_locations_by_units(barcodes)
     return [UnitLocation(**x) for x in query_result]
+
+
+@router.post("/locations/group-units-into-locations", tags=["Locations"], response_model=list[LocationWithUnits])
+async def group_units_into_locations(unit_barcodes: list[str]):
+    """Group units into locations"""
+    barcodes = tuple(unit_barcodes)
+    query_result = LocationsQueries().select_locations_by_units(barcodes)
+
+    mapped = {}
+    for unit in query_result:
+        loc_id = unit["location_id"]
+
+        if loc_id not in mapped:
+            mapped[loc_id] = {
+
+                "location_id": loc_id,
+                "x": unit["x"],
+                "y": unit["y"],
+                "unit_barcodes": [unit["unit_barcode"]]
+            }
+        else:
+            mapped[loc_id]["unit_barcodes"].append(unit["unit_barcode"])
+
+    return [LocationWithUnits(**x) for x in mapped.values()]
