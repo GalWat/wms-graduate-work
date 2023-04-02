@@ -19,3 +19,10 @@ class GetLocationResponse(BaseModel):
     group_id: int
     x: int
     y: int
+
+
+class UnitLocation(BaseModel):
+    unit_barcode: str
+    location_id: int
+    x: int
+    y: int

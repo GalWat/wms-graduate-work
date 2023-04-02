@@ -2,6 +2,7 @@ from schemas.locations import (
     CreateLocationRequest,
     CreateLocationResponse,
     GetLocationResponse,
+    UnitLocation
 )
 from queries.locations import LocationsQueries
 
@@ -26,3 +27,11 @@ async def get_location(location_id: int):
     """Get a location group"""
     query_result = LocationsQueries().select_location(location_id)
     return GetLocationResponse(**query_result)
+
+
+@router.post("/locations/find-locations-by-units", tags=["Locations"], response_model=list[UnitLocation])
+async def find_locations_by_units(unit_barcodes: list[str]):
+    """Find locations by units"""
+    barcodes = tuple(unit_barcodes)
+    query_result = LocationsQueries().select_locations_by_units(barcodes)
+    return [UnitLocation(**x) for x in query_result]

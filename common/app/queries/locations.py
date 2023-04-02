@@ -13,3 +13,11 @@ class LocationsQueries(BaseQueries):
     def update_location_barcode(self, location_id: int, barcode: str) -> None:
         query = "UPDATE locations SET barcode = %s WHERE id = %s"
         self.execute(query, (barcode, location_id))
+
+    def select_locations_by_units(self, unit_barcodes: tuple[str]) -> list[dict]:
+        query = """SELECT u.barcode as unit_barcode, u.current_location_id as location_id, l.x, l.y
+                    FROM units as u
+                    RIGHT JOIN locations l on l.id = u.current_location_id
+                    WHERE u.type_id = 1
+                    AND u.barcode IN %s"""
+        return self.execute(query, (unit_barcodes,))
