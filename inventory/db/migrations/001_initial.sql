@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS products
     barcode      varchar(40) UNIQUE       NOT NULL,
     unit_barcode varchar(40)              NOT NULL,
     sku_id       int REFERENCES skus (id) NOT NULL,
+    stock_type   int DEFAULT 1            NOT NULL,
     supply_id    int
 );
 -- migrate:down

@@ -1,7 +1,7 @@
 from schemas.locations import (
     CreateLocationRequest,
     CreateLocationResponse,
-    GetLocationResponse
+    GetLocationResponse,
 )
 from queries.locations import LocationsQueries
 
@@ -13,7 +13,8 @@ router = APIRouter()
 @router.post("/locations/create", tags=["Locations"], response_model=CreateLocationResponse)
 async def create_location(location: CreateLocationRequest):
     """Create a location group"""
-    result = LocationsQueries().insert_location(barcode="", type_id=location.type_id, group_id=location.group_id)
+    result = LocationsQueries().insert_location(barcode="", type_id=location.type_id, group_id=location.group_id,
+                                                x=location.x, y=location.y)
     location_id = result["id"]
     location_barcode = f"lc{location_id}"
     LocationsQueries().update_location_barcode(location_id=location_id, barcode=location_barcode)

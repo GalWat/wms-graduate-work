@@ -4,6 +4,8 @@ from pydantic import BaseModel
 class CreateLocationRequest(BaseModel):
     type_id: int
     group_id: int
+    x: int
+    y: int
 
 
 class CreateLocationResponse(BaseModel):
@@ -15,3 +17,5 @@ class GetLocationResponse(BaseModel):
     barcode: str
     type_id: int
     group_id: int
+    x: int
+    y: int

@@ -7,7 +7,15 @@ default:
 development:
     db:
       host: "galwat-remote.ydns.eu"
+    inventory-service:
+      host: "galwat-remote.ydns.eu/inventory"
+    common-service:
+      host: "galwat-remote.ydns.eu/common"
 
 production:
     db:
       host: "postgres"
+    inventory-service:
+      host: "inventory"
+    common-service:
+      host: "common"

@@ -2,6 +2,7 @@ import random
 
 from framework.api_clients.common import CommonClient
 from framework.api_clients.inventory import InventoryClient
+from itertools import product
 
 from tests.framework.constants import LocationTypes, UnitTypes
 
@@ -17,8 +18,8 @@ sku_ids = [inventory_client.skus.create_v1("Big Red Button")["id"],
 location_group_id = common_client.location_groups.create_v1("Sector 1")["id"]
 
 # Create racks
-for _ in range(3):
-    location_id = common_client.locations.create_v1(LocationTypes.Rack, location_group_id)["id"]
+for x, y in product([1, 2, 3], [1, 2, 3]):
+    location_id = common_client.locations.create_v1(LocationTypes.Rack, location_group_id, x, y)["id"]
 
     # Create cells
     for _ in range(10):

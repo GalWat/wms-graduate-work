@@ -16,7 +16,9 @@ CREATE TABLE IF NOT EXISTS locations
     id       serial PRIMARY KEY,
     barcode  varchar(40)                         NOT NULL,
     type_id  int REFERENCES location_types (id)  NOT NULL,
-    group_id int REFERENCES location_groups (id) NOT NULL
+    group_id int REFERENCES location_groups (id) NOT NULL,
+    x        int                                 NOT NULL,
+    y        int                                 NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS unit_types
