@@ -13,6 +13,7 @@ router = APIRouter()
 @router.post("/tasks/create-task", tags=["Tasks"], response_model=api_schemas.ShortTask)
 async def create_task(task: api_schemas.TaskCreate, db: Session = Depends(get_db)):
     """Create a new task"""
+
     return bll.tasks.create_task(db, task)
 
 

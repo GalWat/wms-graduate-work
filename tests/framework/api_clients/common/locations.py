@@ -2,9 +2,9 @@ from tests.framework.api_clients.base_handlers import BaseHandlers
 
 
 class LocationsHandlers(BaseHandlers):
-    def create_v1(self, type_id: int, group_id: int, x: int, y: int):
+    def create_v1(self, type_id: int, group_id: int, x: int, y: int, orientation: int = 1):
         handler = "locations/create"
-        json = {"type_id": type_id, "group_id": group_id, "x": x, "y": y}
+        json = {"type_id": type_id, "group_id": group_id, "x": x, "y": y, "orientation": orientation}
         return self.client.post(handler, json)
 
     def get_v1(self, location_id):

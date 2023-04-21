@@ -6,6 +6,7 @@ class CreateLocationRequest(BaseModel):
     group_id: int
     x: int
     y: int
+    orientation: int
 
 
 class CreateLocationResponse(BaseModel):
@@ -19,6 +20,7 @@ class GetLocationResponse(BaseModel):
     group_id: int
     x: int
     y: int
+    orientation: int
 
 
 class UnitLocation(BaseModel):
