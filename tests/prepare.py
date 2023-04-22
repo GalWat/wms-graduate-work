@@ -40,7 +40,7 @@ def value_gen(width, height):
         orientation = 0 if orientation == 2 else 2
 
         for y in range(1, height):
-            if y % 4 == 0:
+            if y % 5 == 0:
                 continue
 
             yield x, y, orientation

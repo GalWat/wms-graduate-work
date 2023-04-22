@@ -15,3 +15,11 @@ async def get_warehouse_plan():
 
     drawer = Drawer(block_size=25, w_count=32, h_count=17, pixel_scale=2)
     return HTMLResponse(content=drawer.draw(racks).as_html(), status_code=200)
+
+
+@router.get("/routing/start-distance-calculation", tags=["Routing"])
+async def start_distance_calculation():
+    """Start distance calculation"""
+    pass
+
+

@@ -1,4 +1,11 @@
 -- migrate:up
+CREATE TABLE IF NOT EXISTS settings
+(
+    id    serial PRIMARY KEY,
+    key   text NOT NULL,
+    value jsonb NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS location_types
 (
     id   serial PRIMARY KEY,
