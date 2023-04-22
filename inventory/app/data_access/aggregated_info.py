@@ -2,11 +2,13 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from models import Product
+from constants import StockType
 
 
 def find_skus_in_units(db: Session, sku_ids: list[int]):
     query_result = db.query(Product.unit_barcode, Product.sku_id, func.count(Product.id).label('count')) \
         .filter(Product.sku_id.in_(sku_ids)) \
+        .filter(Product.stock_type == StockType.Valid) \
         .group_by(Product.unit_barcode, Product.sku_id) \
         .all()
 

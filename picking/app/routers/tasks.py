@@ -13,7 +13,6 @@ router = APIRouter()
 @router.post("/tasks/create-task", tags=["Tasks"], response_model=api_schemas.ShortTask)
 async def create_task(task: api_schemas.TaskCreate, db: Session = Depends(get_db)):
     """Create a new task"""
-
     return bll.tasks.create_task(db, task)
 
 
@@ -34,3 +33,9 @@ async def get_task_info(task_id: int, db: Session = Depends(get_db)):
                          picked_products],
         progress=api_schemas.Progress(total=sum([sku.count for sku in needed_skus]), picked=len(picked_products))
     )
+
+
+@router.get("/tasks/take", tags=["Tasks"])
+async def take_task(db: Session = Depends(get_db)):
+    """Take task"""
+    raise NotImplementedError
