@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
+from api_clients.common import CommonClient
 
 import api_schemas
 import bll.tasks
 from bll.constants import TaskStatus
+from bll.picking_route import get_location_sets
 
 from dependencies.database import get_db
 
@@ -35,7 +38,14 @@ async def get_task_info(task_id: int, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/tasks/take", tags=["Tasks"])
-async def take_task(db: Session = Depends(get_db)):
+@router.post("/tasks/take", tags=["Tasks"], response_class=HTMLResponse)
+async def take_task(count_by_sku: dict):
     """Take task"""
-    raise NotImplementedError
+    count_by_sku = {int(key): value for key, value in count_by_sku.items()}
+
+    common = CommonClient()
+    try:
+        locations = list(get_location_sets(count_by_sku))
+        return common.routing.post_warehouse_plan_v1(locations)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Something bad happens")

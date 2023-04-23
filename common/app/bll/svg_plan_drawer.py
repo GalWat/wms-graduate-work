@@ -17,10 +17,11 @@ class Drawer:
         self.w_count = w_count
         self.h_count = h_count
 
-    def draw(self, racks: dict):
+    def draw(self, racks: dict, marked_racks: set = None) -> draw.Drawing:
         """racks: {(x, y): orientation}"""
         rack_elem = Rack()
         empty_elem = Empty()
+        red_dot = RedDot()
 
         for x in range(self.w_count):
             for y in range(self.h_count):
@@ -28,6 +29,8 @@ class Drawer:
                 if (x, y) in racks:
                     orientation = Orientation(racks[(x, y)])
                     rack_elem.draw(self.d, x * self.block_size, y * self.block_size, orientation)
+                if marked_racks and (x, y) in marked_racks:
+                    red_dot.draw(self.d, x * self.block_size, y * self.block_size)
 
         return self.d
 
@@ -53,3 +56,8 @@ class Empty(Element):
         super().__init__()
         self.group.append(draw.Rectangle(0.5, 0.5, 24, 24, fill='whitesmoke', stroke='none'))
 
+
+class RedDot(Element):
+    def __init__(self):
+        super().__init__()
+        self.group.append(draw.Circle(12.5, 12.5, 4, fill='red', stroke='none'))

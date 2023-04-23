@@ -47,4 +47,4 @@ def value_gen(width, height):
 
 
 with Pool(8) as p:
-    p.starmap(create_rack_and_content, value_gen(9, 6))
+    p.starmap(create_rack_and_content, value_gen(9, 10))

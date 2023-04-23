@@ -10,6 +10,10 @@ class LocationsQueries(BaseQueries):
         query = "SELECT id, barcode, type_id, group_id, x, y, orientation FROM locations WHERE id = %s"
         return self.execute(query, (location_id,))[0]
 
+    def select_locations(self, location_ids: tuple[int]) -> dict:
+        query = "SELECT id, barcode, type_id, group_id, x, y, orientation FROM locations WHERE id IN %s"
+        return self.execute(query, (location_ids,))
+
     def update_location_barcode(self, location_id: int, barcode: str) -> None:
         query = "UPDATE locations SET barcode = %s WHERE id = %s"
         self.execute(query, (barcode, location_id))

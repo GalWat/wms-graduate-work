@@ -33,13 +33,13 @@ def calculate_distance_between_all():
 
     distances = {}
     for waypoint in waypoints:
-        distances[waypoint] = calculate_dinstances_from_waypoint(
+        distances[waypoint] = calculate_distances_from_waypoint(
             waypoint, waypoints.keys(), floor_map, warehouse_width-1, warehouse_height-1
         )
     return distances
 
 
-def calculate_dinstances_from_waypoint(start: tuple[int, int], destinations, floor_map, width, height):
+def calculate_distances_from_waypoint(start: tuple[int, int], destinations, floor_map, width, height):
     floor_map = deepcopy(floor_map)
     next_cells = [start]
 
@@ -63,4 +63,12 @@ def calculate_dinstances_from_waypoint(start: tuple[int, int], destinations, flo
     return result
 
 
-calculate_distance_between_all()
+def map_locations_into_floor_coordinates(location_ids: list[int]):
+    query_result = LocationsQueries().select_locations(tuple(location_ids))
+    mapping = {}
+
+    for location in query_result:
+        x_diff, y_diff = diff_by_orientation[location["orientation"]]
+        mapping[location["id"]] = (location["x"] + x_diff, location["y"] + y_diff)
+
+    return mapping
