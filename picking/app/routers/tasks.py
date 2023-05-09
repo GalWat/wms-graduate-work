@@ -44,8 +44,8 @@ async def take_task(count_by_sku: dict):
     count_by_sku = {int(key): value for key, value in count_by_sku.items()}
 
     common = CommonClient()
-    try:
-        locations = list(get_location_sets(count_by_sku))
-        return common.routing.post_warehouse_plan_v1(locations)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Something bad happens")
+    # try:
+    locations = [list(x) for x in get_location_sets(count_by_sku)]
+    return common.routing.post_warehouse_plan_v1(locations)
+    # except Exception:
+    #     raise HTTPException(status_code=400, detail="Something bad happens")

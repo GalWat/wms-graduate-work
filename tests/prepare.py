@@ -10,9 +10,7 @@ common_client = CommonClient()
 inventory_client = InventoryClient()
 
 # # Create SKUs
-sku_ids = [inventory_client.skus.create_v1("Big Red Button")["id"],
-           inventory_client.skus.create_v1("Big Blue Button")["id"],
-           inventory_client.skus.create_v1("Big Green Button")["id"]]
+sku_ids = [inventory_client.skus.create_v1(f"Big Button {i}")["id"] for i in range(15)]
 
 # Create sector
 location_group_id = common_client.location_groups.create_v1("Sector 1")["id"]

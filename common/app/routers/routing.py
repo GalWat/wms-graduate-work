@@ -19,16 +19,17 @@ async def get_warehouse_plan():
 
 
 @router.post("/routing/warehouse-plan", tags=["Routing"], response_class=HTMLResponse)
-async def get_warehouse_plan(location_ids: list[int]):
+async def get_warehouse_plan(marked: list[list]):
     """Draw warehouse plan in SVG format with marked locations"""
     query_result = LocationsQueries().select_locations_by_type(type_id=2)  # Rack
     racks = {(rack["x"], rack["y"]): rack["orientation"] for rack in query_result}
-
-    query_result = LocationsQueries().select_locations(tuple(location_ids))
-    marked_racks = {(rack["x"], rack["y"]) for rack in query_result}
+    #
+    # query_result = LocationsQueries().select_locations(tuple(location_ids))
+    # marked_racks = {(rack["x"], rack["y"]) for rack in query_result}
+    marked_coords = {tuple(x) for x in marked}
 
     drawer = Drawer(block_size=25, w_count=32, h_count=17, pixel_scale=2)
-    return HTMLResponse(content=drawer.draw(racks, marked_racks).as_html(), status_code=200)
+    return HTMLResponse(content=drawer.draw(racks, marked_coords).as_html(), status_code=200)
 
 
 @router.get("/routing/start-distance-calculation", tags=["Routing"])

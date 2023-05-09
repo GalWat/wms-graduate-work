@@ -1,5 +1,3 @@
-from itertools import combinations
-
 from api_clients.inventory import InventoryClient
 from api_clients.common import CommonClient
 from collections import Counter
@@ -12,7 +10,10 @@ def get_location_sets(counts_by_sku: dict[int, int]):
     count_by_locations = get_all_locations_with_skus(list(counts_by_sku.keys()))
     locations = list(count_by_locations.keys())
     locations_coordinates = common.routing.map_locations_into_floor_coordinates_v1(locations)
-    result = find_best_locations_set(count_by_locations, counts_by_sku, distances, locations_coordinates)
+
+    count_by_floor = map_counts_to_floor_coords(count_by_locations, locations_coordinates)
+
+    result = find_best_locations_set(count_by_floor, counts_by_sku, distances)
     return result
 
 
@@ -40,13 +41,26 @@ def get_all_locations_with_skus(sku_ids: list[int]):
     return count_by_locations
 
 
-def find_best_locations_set(count_by_locations, counts_by_sku: dict[int, int], distances, location_coords):
+def map_counts_to_floor_coords(count_by_locations, locations_coordinates):
+    count_by_floor = {}
+    for location, count in count_by_locations.items():
+        coords = locations_coordinates[location]
+        if coords not in count_by_floor:
+            count_by_floor[coords] = count
+        else:
+            count_by_floor[coords] += count
+
+    return count_by_floor
+
+
+def find_best_locations_set(count_by_locations, counts_by_sku: dict[int, int], distances):
     needed_sku_counts = Counter(counts_by_sku)
     locations = list(count_by_locations.keys())
     locations_len = len(locations)
 
-    c_min = float("inf")
-    min_locations_set = set()
+    global_c_max = float("inf")
+    locations_sets = []
+    events = []
 
     current_layer = [[(set(), Counter())]]
     for i in range(locations_len):
@@ -64,13 +78,18 @@ def find_best_locations_set(count_by_locations, counts_by_sku: dict[int, int], d
                 for loc in locations[i+j+k:]:
                     new_locs_set = locs_set | {loc}
                     new_counter = counter + count_by_locations[loc]
-                    c = criteria_func(new_locs_set, distances, location_coords)
-                    if c >= c_min:
+                    c_min = mst_length(new_locs_set, distances)
+
+                    if c_min > global_c_max:
                         new_group.append((None, None))
                     elif new_counter >= needed_sku_counts:
-                        c_min = c
-                        min_locations_set = new_locs_set
                         new_group.append((None, None))
+                        index = len(locations_sets)
+                        locations_sets.append(new_locs_set)
+                        c_max = closest_neighbour_path(new_locs_set, distances)
+                        global_c_max = min(c_max, global_c_max)
+                        events.append((c_min, 0, index))
+                        events.append((c_max, 1, index))
                     else:
                         new_group.append((new_locs_set, new_counter))
 
@@ -78,14 +97,61 @@ def find_best_locations_set(count_by_locations, counts_by_sku: dict[int, int], d
 
         current_layer = next_layer
 
-    return min_locations_set
+    events.sort()
+    result = []
+    for c_val, event_type, index in events:
+        if event_type == 1:
+            break
+
+        result.append(locations_sets[index])
+
+    return result[0]
 
 
-def criteria_func(locations: set, distances, location_coords):
-    distances_between_locations = []
-    for loc1, loc2 in combinations(locations, 2):
-        loc1_coords = location_coords[loc1]
-        loc2_coords = location_coords[loc2]
-        distances_between_locations.append(distances[loc1_coords][loc2_coords])
+def mst_length(locations: set, distances):
+    res = 0
+    unvisited = locations.copy()
+    visited = [unvisited.pop()]
 
-    return sum(sorted(distances_between_locations, reverse=True)[:len(locations)-1])
+    while len(unvisited) > 0:
+        new_v = None
+        new_dist = float("inf")
+
+        for v in visited:
+            for possible_v in unvisited:
+                dist = distances[v][possible_v]
+                if dist < new_dist:
+                    new_dist = dist
+                    new_v = possible_v
+
+        unvisited.remove(new_v)
+        visited.append(new_v)
+        res += new_dist
+
+    return res
+
+
+def closest_neighbour_path(locations: set, distances):
+    res = 0
+    unvisited = locations.copy()
+    v = unvisited.pop()
+
+    while len(unvisited) > 0:
+        new_v = None
+        new_dist = float("inf")
+
+        for possible_v in unvisited:
+            dist = distances[v][possible_v]
+            if dist < new_dist:
+                new_dist = dist
+                new_v = possible_v
+
+        unvisited.remove(new_v)
+        v = new_v
+        res += new_dist
+
+    return res
+
+
+def ga_shortest_path():
+    pass
